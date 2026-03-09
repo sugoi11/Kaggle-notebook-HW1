@@ -1,0 +1,1000 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "RTe3TYWcm5JF"
+      },
+      "source": [
+        "# Machine Learning - Spring 2026\n",
+        "## Homework 1\n",
+        "\n",
+        "Instructor: Dr. Ilia Tetin\n",
+        "\n",
+        "\n",
+        "Student ID:\n",
+        "\n",
+        "Student Name:\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "## About the Assignment\n",
+        "\n",
+        "This assignment consists of **two parts** focused on practical work with tabular data using the **pandas** library and data visualization using **matplotlib**.\n",
+        "\n",
+        "- **Part 1**: You will complete a series of foundational tasks with these libraries.  \n",
+        "- **Part 2**: You will implement an algorithm that automatically assigns students to courses.\n",
+        "\n",
+        "Points are awarded for each individual task (the point value is shown in parentheses). The maximum score is **10 points** (excluding any bonus tasks).  \n",
+        "\n",
+        "**Recommendation**: Solve the tasks **in the exact order** they appear within each section.\n",
+        "\n",
+        "The main goal of the assignment is to help you confidently master **Jupyter Notebook** (which will be used in all future assignments) as well as the pandas and matplotlib libraries.\n",
+        "\n",
+        "---\n",
+        "\n",
+        "#### Grading and Penalties\n",
+        "\n",
+        "- Each task has a specific point value indicated in parentheses.  \n",
+        "- Maximum possible score: **10 points** (bonus tasks are extra).  \n",
+        "- **Late submissions are not accepted** after the hard deadline.  \n",
+        "- The work must be completed **independently**.  \n",
+        "- Identical or highly similar solutions are considered **plagiarism**. All students involved (both the person who copied and the original author) will receive **0 points**.  \n",
+        "- If you used any code, idea, or solution (even partially) from an open-source resource, you **must** provide a clear link to the source. This is the best way to avoid any suspicion of plagiarism.\n",
+        "\n",
+        "---\n",
+        "\n",
+        "#### Oral Defense\n",
+        "\n",
+        "To verify your understanding, you may be invited to an **oral defense**. During this short discussion you will be asked to explain key parts of your code and the decisions you made.  \n",
+        "\n",
+        "Your final grade may be adjusted after the defense. If you cannot clearly explain your solution, the work will be considered dishonest and graded **0 points**.\n",
+        "\n",
+        "---\n",
+        "\n",
+        "### 0. Introduction\n",
+        "\n",
+        "We are working inside a **Kaggle Notebook** — a free, powerful online environment perfect for writing code, running experiments, exploring data, creating visualizations, and learning — but **not** for production systems.\n",
+        "\n",
+        "A notebook is made of **cells**. Each cell is either:\n",
+        "- a **Code** cell, or  \n",
+        "- a **Markdown** cell (for nicely formatted text, headings, lists, links, formulas, images, etc.).\n",
+        "\n",
+        "#### Useful Keyboard Shortcuts\n",
+        "\n",
+        "| Mode          | Shortcut       | Action                              |\n",
+        "|---------------|----------------|-------------------------------------|\n",
+        "| Command mode  | `Esc`          | Switch to navigation mode           |\n",
+        "| Edit mode     | `Enter`        | Start editing the cell              |\n",
+        "| Any mode      | `Shift + Enter`| Run the cell                        |\n",
+        "| Command mode  | `Y`            | Convert cell to **Code**            |\n",
+        "| Command mode  | `M`            | Convert cell to **Markdown**        |\n",
+        "\n",
+        "\n",
+        "### Kaggle's Pros (+) and Cons (-)\n",
+        "#### Pros (+)\n",
+        "- **Reliable GPU/TPU Access**: Provides free Tesla T4 or P100 GPUs (16GB VRAM) with a fixed 30-hour weekly limit, which is more predictable than Colab's potential sudden disconnections or resource throttling.\n",
+        "- **Superior Hardware in Some Areas**: More powerful CPUs with additional cores and roughly 2.5x more RAM (up to 20-30 GB vs. Colab's free tier ~12 GB), making it better for CPU-intensive tasks like data preprocessing (up to 25% faster in benchmarks).\n",
+        "- **Integrated with Datasets and Competitions**: Direct access to vast Kaggle datasets without manual uploads, seamless integration with ML competitions, and easier for collaborative analysis in a competition-focused environment.\n",
+        "- **User-Friendly Interface**: Simpler UI for beginners, easier notebook saving, and better overall experience for small data tasks or exploratory work. Notebooks are optimized for data science workflows.\n",
+        "- **Persistent Storage**: Up to 20 GB of persistent storage, reducing the need to re-upload files frequently (though limits exist to prevent crashes).\n",
+        "- **Community and Reproducibility**: Strong emphasis on reproducible code with version control built-in, and a large community for sharing kernels/notebooks.\n",
+        "\n",
+        "\n",
+        "#### Cons (-)\n",
+        "- **Resource Limits**: Strict weekly GPU/TPU quota (30 hours), session limits (9 hours max per notebook), and potential kernel crashes if storage exceeds ~5-20 GB (sources vary on exact thresholds). No access to high-end GPUs like A100 (available in Colab Pro+).\n",
+        "- **Dataset and File Handling**: Must upload custom datasets via a specific interface/button\n",
+        "- **Limited Customization**: Inability to use custom scripts, modules, or Docker environments easily—predefined setups only, unlike more flexible platforms like RunPod. No pip installs for unsupported libraries (though many ML libs are pre-installed).\n",
+        "- **Performance Inconsistencies**: Higher latency and slower execution in some scenarios (e.g., PyTorch RAM sharing issues)\n",
+        "\n",
+        "\n",
+        "---\n",
+        "\n",
+        "\n",
+        "### Markdown Formatting Examples (with alternatives)\n",
+        "\n",
+        "#### 1. Ordered Lists (alternative versions)\n",
+        "\n",
+        "**Version A (simple steps)**\n",
+        "1. Load the dataset with `pd.read_csv()`\n",
+        "2. Perform exploratory data analysis (EDA)\n",
+        "3. Clean missing values and outliers\n",
+        "4. Build and evaluate the model\n",
+        "\n",
+        "**Version B (with sub-steps)**\n",
+        "1. Data Preparation\n",
+        "   1. Import libraries\n",
+        "   2. Load and inspect data\n",
+        "2. Feature Engineering\n",
+        "   3. Create new features\n",
+        "   4. Encode categorical variables\n",
+        "\n",
+        "#### 2. Unordered Lists (alternative styles)\n",
+        "\n",
+        "**Classic bullets**\n",
+        "- pandas → data manipulation\n",
+        "- matplotlib → basic plotting\n",
+        "- seaborn → statistical visualizations\n",
+        "- plotly → interactive dashboards\n",
+        "\n",
+        "**Task checklist**\n",
+        "- [ ] Load and explore the data\n",
+        "- [ ] Handle missing values\n",
+        "- [ ] Create visualizations\n",
+        "- [ ] Implement student-to-course assignment\n",
+        "\n",
+        "#### 3. Highlighting Text\n",
+        "\n",
+        "**Bold**, *italic*, ***bold italic***, `inline code`, ~~strikethrough~~\n",
+        "\n",
+        "> This is a blockquote — great for tips or important notes.\n",
+        "\n",
+        "**Background highlight** (using HTML inside Markdown):\n",
+        "<span style=\"background-color: #ffffcc; padding: 2px 6px; border-radius: 4px;\">Important warning</span>\n",
+        "\n",
+        "#### 4. Links\n",
+        "\n",
+        "- [Official pandas documentation](https://pandas.pydata.org/docs/)\n",
+        "- [Matplotlib gallery of examples](https://matplotlib.org/stable/gallery/index.html)\n",
+        "- [Kaggle Notebook tutorial](https://www.kaggle.com/docs/notebooks)\n",
+        "\n",
+        "#### 5. LaTeX Formulas (alternative examples)\n",
+        "\n",
+        "**Original heart curve you showed:**\n",
+        "$$ x = 16 \\sin^3 (t) \\quad y = 13 \\cos (t) - 5 \\cos (2t) - 2 \\cos (3t) - \\cos (4t) $$\n",
+        "\n",
+        "**Alternative 1 – Gaussian (Normal) distribution (very useful in ML):**\n",
+        "$$ f(x) = \\frac{1}{\\sigma\\sqrt{2\\pi}} \\exp\\left(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\right) $$\n",
+        "\n",
+        "**Alternative 2 – Cross-entropy loss:**\n",
+        "$$ L = -\\frac{1}{N} \\sum_{i=1}^{N} \\left[ y_i \\log(\\hat{y}_i) + (1-y_i)\\log(1-\\hat{y}_i) \\right] $$\n",
+        "\n",
+        "#### 6. Inserting Images / GIFs\n",
+        "\n",
+        "**Markdown way (recommended for static images):**\n",
+        "```markdown\n",
+        "![Pandas logo](https://pandas.pydata.org/static/img/pandas_white.svg)\n",
+        "```\n",
+        "\n",
+        "**From URL (example):**\n",
+        "![Matplotlib example](https://matplotlib.org/stable/_images/sphx_glr_simple_plot_001.png)\n",
+        "\n",
+        "**Animated GIF example:** <img alt=\"\" class=\"gs bi jk c\" width=\"400\" loading=\"eager\" role=\"presentation\" src=\"https://miro.medium.com/v2/0*kVETqwtYsQ8BFJDc.gif\">\n",
+        "\n",
+        "**In code cell (dynamic plots):**\n",
+        "```python\n",
+        "import matplotlib.pyplot as plt\n",
+        "plt.plot([1, 2, 3, 4], [1, 4, 2, 3])\n",
+        "plt.title(\"My first plot in the assignment\")\n",
+        "plt.show()\n",
+        "```"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "K0NbMi3NLYG_"
+      },
+      "source": [
+        "Try to create your own cells, write some code and text with some formula.\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "UV5z68E0KmuI"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### 1. Tabular Data and Pandas [4 points]\n",
+        "\n",
+        "**Pandas** is the most popular and powerful Python library for working with tabular (structured) data — as long as the dataset fits comfortably in your computer’s RAM. Despite some known performance limitations in its internal implementation, pandas has become the **industry standard** for data analysis and manipulation.\n",
+        "\n",
+        "The central object in pandas is the **`pd.DataFrame`** — a two-dimensional labeled table with named columns that can store data of different types and a flexible index (including multi-level indexes). A DataFrame can be created by reading data from a file or by constructing it manually from other Python objects (lists, dictionaries, NumPy arrays, etc.).\n",
+        "\n",
+        "In this section you will solve several short practical tasks. You can choose your preferred approach:\n",
+        "- Study the documentation first, then solve the tasks, **or**\n",
+        "- Learn “on the go” by tackling the tasks and consulting the docs whenever needed.\n",
+        "\n",
+        "**Official pandas documentation**: [https://pandas.pydata.org/pandas-docs/stable/index.html](https://pandas.pydata.org/pandas-docs/stable/index.html)\n",
+        "\n",
+        "#### Important Rules (apply to the entire section until “Distribution of Students into Courses”)\n",
+        "- **Loops** (`for`, `while`) are **strictly prohibited**.\n",
+        "- **Row-wise operations** are **also prohibited**, including:\n",
+        "  - `.apply()`, `.applymap()`, `.map()`\n",
+        "  - `.assign()` with `lambda`\n",
+        "  - `np.vectorize`, `np.apply_along_axis`, and similar constructs\n",
+        "\n",
+        "**Use only vectorized pandas operations and built-in methods.**  \n",
+        "Violations will result in **point deductions**.\n",
+        "\n",
+        "#### Submission Requirements\n",
+        "For every task in this section you must provide:\n",
+        "1. The **working code** that computes the result.\n",
+        "2. A **clear textual answer** (when the task asks for one).\n",
+        "\n",
+        "Looking at the table manually is **not acceptable** — all answers must be obtained via pandas code.\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "tj-vmZ_uPJxF"
+      },
+      "outputs": [],
+      "source": [
+        "%pylab inline\n",
+        "import pandas as pd\n",
+        "from pandas.testing import assert_frame_equal\n",
+        "from collections import Counter"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "z9M75ltAPIZZ"
+      },
+      "source": [
+        "#### Task 1.1 [0.5 points] — Loading and Inspecting the Data\n",
+        "\n",
+        "1. Open the file containing the table (**pay attention to the correct file format**).\n",
+        "2. Display the **last 3 rows** of the DataFrame.\n",
+        "\n",
+        "**Exploration tip** (do not submit this part):  \n",
+        "After loading the data, briefly examine it and think about:\n",
+        "- What does this dataset represent?\n",
+        "- How many rows and columns are there?\n",
+        "- What information do the columns contain and what are their data types?\n",
+        "\n",
+        "You will need this understanding for the following tasks."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "lLzLuEtPPAJY"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "Iqy5AbgUP1AT"
+      },
+      "source": [
+        "#### Answer the questions:"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "WnWzzQVrPUXA"
+      },
+      "source": [
+        "#### 1. How many unique users were there from the 22nd year intake groups, and how many from the 21st year groups?"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "wvU-L84sPbQz"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "TG_16RSlPbi_"
+      },
+      "source": [
+        "2. Are there any unique students among the combined set of 3rd and 4th year courses with equal percentiles?"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "TIQP6itmPhGh"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "gGREAAm8PqGz"
+      },
+      "source": [
+        "#### 2. [0.5 points] Are there any missing values in the data? In which columns? How many are there in each of these columns?"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "Zd9bVGJ9QCzB"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "ZR3ZVi0OQHzv"
+      },
+      "source": [
+        "Fill the missing values with an empty string for string columns, zero for numeric ones, and False for boolean ones (try to avoid listing the names of all columns). Rely not on the meaning of the columns, but on the current data type."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "Kn4PZl28QLCE"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "8myg-KMLQNQT"
+      },
+      "source": [
+        "#### 3. [0.5 points] Take a closer look at the 'is_first_time' column.\n",
+        "What is the percentage ratio of answers? How many of them are \"No\"?"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "tZYWTiz4QQEC"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "1YA8RoWnQXVP"
+      },
+      "source": [
+        "If you find repeated student submissions, keep only the latest version. In further tasks, use the version of the data without duplicates. Remove the is_mi column, we won't need it.\n",
+        "\n",
+        "Submissions with the value \"No\" in 'is_first_time' can be either repeated or primary, since the field was filled out by the students themselves."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "jDVZNmZAQhdq"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "GW5BUpCyQjLb"
+      },
+      "source": [
+        "#### 4. [0.5 points] What blended courses exist for fourth-year students? Which blended course has the largest number of enrolled students? Which of the blended courses has the lowest average percentile of students who applied (output this course and the number of students on it)?"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "U2kIbse3QrvH"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "axs97MZwQs1T"
+      },
+      "source": [
+        "#### 5. [1 point] Find out if there are students with absolutely identical preferences for all courses.\n",
+        "\n",
+        "To do this, form a table where for each possible set of courses, the number of students who chose such a set is counted, and keep only the rows where this number is greater than 1. It is not required to form variants that are not represented by any student initially.\n",
+        "\n",
+        "In this case, the set of courses is defined by an ordered set ('fall_1', 'fall_2', 'fall_3', 'spring_1', 'spring_2', 'spring_3', 'blended'). The blended element will be zero for the 3rd year."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {},
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "Zml4gJMEQq3A"
+      },
+      "source": [
+        "#### 6. [0.5 points] Find the elective courses that were enrolled in by both students from the 22nd year intake and students from the 21st year.\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "lI6djwZARQ9t"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "b7xjX_l8RSde"
+      },
+      "source": [
+        "\n",
+        "By exclusion, find the courses that were offered only to students from the 22nd year and only to students from the 21st"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "7X6hbwtoRQ6D"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "VJGFG2H5Q8IW"
+      },
+      "source": [
+        "Do you see anything unusual in the resulting lists? (no need to change anything, just think)\n",
+        "\n",
+        "**Answer:**"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "KdvWlC46Q8FB"
+      },
+      "source": [
+        "### Visualizations and Matplotlib\n",
+        "\n",
+        "When working with data, it is often inconvenient to draw conclusions by looking at a table and numbers in particular, so it is important to be able to visualize data. Here, the key rules for formatting graphs for all homework assignments will be described.\n",
+        "\n",
+        "Matplotlib, of course, has documentation with a large number of examples, but to start, it is enough to know about several basic types of graphs:\n",
+        "\n",
+        "* plot — a regular point-by-point graph, which can be used to depict curves or individual points;\n",
+        "\n",
+        "* hist — a histogram showing the distribution of some quantity;\n",
+        "\n",
+        "* scatter — a graph showing the relationship between two quantities;\n",
+        "\n",
+        "* bar — a bar graph showing the relationship of a quantitative value to a categorical one.\n",
+        "\n",
+        "In this assignment, you will try to build one of them. Do not forget about the basic principles of constructing decent graphs:\n",
+        "\n",
+        "* axes should be labeled, and not too small;\n",
+        "\n",
+        "* the graph should have a title;\n",
+        "\n",
+        "* if several graphs are depicted, an explanatory legend is necessary;\n",
+        "\n",
+        "* all lines on the graphs should be clearly visible (no similar colors or colors that blend with the background);\n",
+        "\n",
+        "* if a quantity with an obvious range of values is displayed (for example, percentages can be from 0 to 100), then it is desirable to scale the axis to the entire range of values (an exception is the case when you need to show a small difference that is unnoticeable on such scales);\n",
+        "\n",
+        "* a grid on the graph helps to estimate values at points by eye, this is usually useful, so it is better to draw it;\n",
+        "\n",
+        "* if the distribution on the histogram has heavy tails, it is better to use a logarithmic scale.\n",
+        "\n",
+        "Another library for visualization: seaborn (usually abbreviated as sns). This is a setup over matplotlib, sometimes it is more convenient and prettier to do visualizations through it."
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "xeuwdnzvRo30"
+      },
+      "source": [
+        "5 points after which your graphs will never be the same:\n",
+        "\n",
+        "* for a beautiful picture `%config InlineBackend.figure_format = 'retina'`\n",
+        "\n",
+        "* set the size of (almost) all graphs (you can choose other values) `plt.rcParams['figure.figsize'] = 8, 5`\n",
+        "\n",
+        "* font size for graph labels `plt.rcParams['font.size'] = 12`\n",
+        "\n",
+        "* format in which the image is saved `plt.rcParams['savefig.format'] = 'pdf'`\n",
+        "\n",
+        "* sns – seaborn, adds a grid `sns.set_style('darkgrid')`\n",
+        "\n",
+        "Add these functions to the cell below. Each graph will still need to be configured separately, but these lines will significantly simplify the process."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "FY2csZoARgMm"
+      },
+      "outputs": [],
+      "source": [
+        "%matplotlib inline\n",
+        "import matplotlib.pyplot as plt\n",
+        "import seaborn as sns\n",
+        "\n",
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "KyhcfgmhS5e0"
+      },
+      "source": [
+        "#### 7. [0.5 points] Build a graph (barplot) of median percentiles depending on the first character of the hex-code of the student's id\n",
+        "In this way, we visually estimate whether there is a dependence between the supposedly random id and a significant parameter. If there is a dependence, and in the future we will split the data into test and train by such an id without shuffling, then we may allow leakage, so it is important to track such features.\n",
+        "\n",
+        "In the graph, explicitly set the order of columns by the symbols of the hex-alphabet (from 0 to f left to right) and configure the display of confidence intervals at the 0.96 level. Can we speak of the presence of the checked dependence based on visual information?"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "_UVjbgHjTIZo"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "X1k4_HJQTKhW"
+      },
+      "source": [
+        "Save the graph in pdf format (so it remains vectorized)."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "TVnk1lZZTK8N"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "hWnA9_46TNW5"
+      },
+      "source": [
+        "### 2. Distribution of Students into Courses. (6 points + one bonus point)\n",
+        "‼️CAREFULLY STUDY THE TEXT BELOW‼️.\n",
+        "\n",
+        "If you have questions during the tasks - reread the entire text again, most likely the answers are already contained in it.\n",
+        "Now you need to distribute students into fall elective courses, taking into account their preferences.\n",
+        "Algorithm for distributing students into courses:"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {},
+      "source": [
+        "### 2. Distribution of Students into Courses [6 points + 1 bonus point]\n",
+        "\n",
+        "**⚠️ IMPORTANT — READ CAREFULLY!**  \n",
+        "Before you start coding, read the entire section below thoroughly.  \n",
+        "If any question arises during implementation, return here — the answer is almost certainly already written.\n",
+        "\n",
+        "Your task is to **automatically assign students to fall elective courses** according to their stated preferences and the official algorithm.\n",
+        "\n",
+        "#### Official Distribution Algorithm\n",
+        "\n",
+        "1. **First Wave**  \n",
+        "   For each course, form a list of all students who indicated it as a **first-priority** choice.  \n",
+        "   - If a student must choose **two** fall electives, both their `fall_1` and `fall_2` choices count as first-priority.  \n",
+        "   If the number of applicants exceeds the course capacity, select the **top students by smallest percentile** (best rating).\n",
+        "\n",
+        "2. **Second Wave**  \n",
+        "   For any course that still has free places, form a list of students who indicated it as a **second-priority** choice and fill the remaining spots with the best students (by percentile) from that list.\n",
+        "\n",
+        "3. **Third Wave**  \n",
+        "   Repeat the same procedure for **third-priority** choices.\n",
+        "\n",
+        "4. Students who still have not received the required number of courses after the three waves will be contacted individually by the academic office.\n",
+        "\n",
+        "#### Key Implementation Details\n",
+        "\n",
+        "- Competition for each course is **common** for 3rd-year (22nd year) and 4th-year (21st year) students.\n",
+        "- **Default capacity**: every elective course has **1 group of up to 30 students**.\n",
+        "- **Special capacities**:\n",
+        "\n",
+        "| Course                                | Capacity |\n",
+        "|---------------------------------------|----------|\n",
+        "| All other courses                     | 30       |\n",
+        "| Quantitative Finance                  | 60       |\n",
+        "| Industrial Programming in Haskell     | 60       |\n",
+        "| Recommender Systems                   | 60       |\n",
+        "| Deep Learning in Audio Processing     | 1000     |\n",
+        "\n",
+        "- **Default student load**:\n",
+        "  - Most students choose **1 fall** + **1 spring** elective.\n",
+        "  - 4th-year students also choose **1 blended** course.\n",
+        "- **MOP specialization students** (21st year groups **211, 212, 213** and 22nd-year students with `is_ml_student == True`) must choose **2 fall** + **2 spring** electives.\n",
+        "  - For them, `fall_1` and `fall_2` are both treated as first-priority.\n",
+        "  - Their second-priority is `fall_3`.\n",
+        "  - They participate in only **two selection waves**.\n",
+        "\n",
+        "- **Special rule for MOP students and “Machine Learning 2”**:\n",
+        "  - MOP students **cannot** take Machine Learning 2 as a spring elective.\n",
+        "  - If they listed it, their priorities are **shifted**: original priorities 2 and 3 become 1 and 2; the 3rd priority becomes empty.\n",
+        "- In all other cases where a student’s 1st and 2nd choices coincide, **no priority shift** is needed.\n",
+        "- **Blended courses** are **not distributed** in this task and do not affect fall elective assignment.\n",
+        "\n",
+        "- **Important assumption** (as stated in the assignment): during distribution there will never be two students with **exactly the same percentile** competing for the last place.\n",
+        "\n",
+        "#### Rating and Percentile (how students are ranked)\n",
+        "\n",
+        "- The **`rating`** column contains the student’s **credit-rating score** (higher = better).  \n",
+        "- The **`percentile`** column shows the student’s position **within their year and educational program**:\n",
+        "  - **0%** = the best student\n",
+        "  - **100%** = the worst student\n",
+        "- We always select students with the **smallest percentile** (best performers).\n",
+        "\n",
+        "Detailed calculation of rating and percentile is explained in the seminar notebook.\n",
+        "\n",
+        "#### Requirements for Your Solution\n",
+        "\n",
+        "- **Avoid loops where possible**.  \n",
+        "  You **may** iterate over courses and over the three waves.  \n",
+        "  **Bonus +1 point** if you manage to eliminate the loop over courses entirely (code duplication does **not** count as a valid solution).\n",
+        "\n",
+        "- The final output must be a file named **`res_fall.csv`** with exactly these columns:\n",
+        "\n",
+        "| Column   | Description |\n",
+        "|----------|-------------|\n",
+        "| `ID`     | Student ID |\n",
+        "| `course1`| First assigned fall course (or `\"???\"` if the student should have received a course but didn’t) |\n",
+        "| `course2`| Second assigned fall course (or `\"-\"` if the student chooses only one course) |\n",
+        "\n",
+        "- For students who must choose **two** courses, the order of `course1` and `course2` **does not matter**.\n",
+        "- Save the file using:  \n",
+        "  ```python\n",
+        "  df.to_csv(\"res_fall.csv\", index=False)\n",
+        "  ```\n",
+        "\n",
+        "- Use the **same cleaned dataset** you prepared in Part 1.  \n",
+        "  Make sure it contains:\n",
+        "  - No missing values\n",
+        "  - No duplicate rows\n",
+        "  - No unnecessary columns"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "MB3a7jBwW3iO"
+      },
+      "source": [
+        "#### 0. Check\n",
+        "\n",
+        "First, let's make sure that you have successfully completed the tasks of the first part and check your data for missing values and duplicates:\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "trH5k-YYSMCE"
+      },
+      "outputs": [],
+      "source": [
+        "assert df.shape == (418, 15), 'There are still duplicates or data is lost in the table'\n",
+        "assert df.isna().sum().sum() == 0, 'There are still missing values in the table'"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "N_7d78jjkri8"
+      },
+      "source": [
+        "If you did not receive an AssertionError, then you can continue.\n",
+        "\n",
+        "####  1. [1 point] Create a new feature indicating how many fall courses a student must choose\n",
+        "\n",
+        "This can be helped by information about the student's specialization and group."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "dNl0W1g5kw_K"
+      },
+      "outputs": [],
+      "source": [
+        "#"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "X2U-pa_ak2O3"
+      },
+      "source": [
+        "Check:"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "u62FWzQWkycT"
+      },
+      "outputs": [],
+      "source": [
+        "col_name = '' # insert your new column name as str\n",
+        "\n",
+        "assert(df[df['id'] == 'bcca318e644999583156ff3ab9de3d6bd02295dcb166e39006568ffe9582207b'][col_name] == 1).all()\n",
+        "assert(df[df['id'] == 'edb64996c64421378537d941a77426a5a7bd84f9967ad9f523ca61386e5469ed'][col_name] == 1).all()\n",
+        "assert(df[df['id'] == '5f96908e3ce5d84d693ddd79670d60cd1c6a02646aa779f46586a7699dda7c25'][col_name] == 1).all()\n",
+        "assert(df[df['id'] == '0f137538a170b64258c0e10839cadc325e5f22fc5bb5fa9e20b7351f0a680366'][col_name] == 2).all()"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "PNs9QcK8k4pD"
+      },
+      "source": [
+        "#### 2. [2 points] Distribute students according to the first priority"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "o1IPAzrzk_a7"
+      },
+      "source": [
+        "Compare the courses assigned by you in the first wave with the reference. To do this, transform the data about the assigned courses, bringing them to a \"per student\" breakdown (see the test function docstring for details), and pass it to the 'check_first_wave_assignments' function. If the function did not throw an Exception, then everything is fine!\n",
+        "\n",
+        "Please note: here it is not necessary to handle the details of the condition regarding the answers '???' and '-' from the solution requirements!\n",
+        "I recommend highlighting the dataset transformation (creation of 'course1' and 'course2' columns) into a separate function, since it will be needed later when submitting results to the testing system."
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "W_03sH6ilfCa"
+      },
+      "outputs": [],
+      "source": [
+        "check_df = pd.read_csv('./task_2_check.csv')"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "t1ARhKoFl1zH"
+      },
+      "outputs": [],
+      "source": [
+        "def check_first_wave_assignments(assignments: pd.DataFrame) -> None:\n",
+        "    \"\"\"\n",
+        "    Validates the results of the FIRST WAVE of student course assignments.\n",
+        "\n",
+        "    Parameters\n",
+        "    ----------\n",
+        "    assignments : pd.DataFrame\n",
+        "        DataFrame with columns:\n",
+        "            ['ID', 'course1', 'course2', 'fall_course_num']\n",
+        "        One row = one student.\n",
+        "        \n",
+        "        - 'ID'               : student identifier (string)\n",
+        "        - 'course1', 'course2': courses assigned in the first wave.\n",
+        "                                Use None / pd.NA if a course was not assigned.\n",
+        "        - 'fall_course_num'  : number of fall courses the student must choose (1 or 2)\n",
+        "\n",
+        "    Raises\n",
+        "    ------\n",
+        "    AssertionError\n",
+        "        If any student's assignment does not match the reference (or allowed alternatives).\n",
+        "\n",
+        "    Notes\n",
+        "    -----\n",
+        "    Two specific students have multiple valid outcomes (ALTERNATIVES) due to ties in the algorithm.\n",
+        "    The checker accepts any of the listed possibilities for them.\n",
+        "    \"\"\"\n",
+        "    \n",
+        "    def course_columns_to_set_column(row: pd.Series) -> Counter:\n",
+        "        \"\"\"Transform a row's course columns into a Counter of assigned courses.\"\"\"\n",
+        "        result = Counter()\n",
+        "        for col in ['course1', 'course2']:\n",
+        "            val = row[col]\n",
+        "            if pd.notna(val) and val is not None:\n",
+        "                result[val] += 1\n",
+        "        return result\n",
+        "\n",
+        "    ANSWER_SOURCE = './task_2_check.csv'\n",
+        "\n",
+        "    # Students with multiple acceptable assignments (due to algorithmic ties)\n",
+        "    ALTERNATIVES = {\n",
+        "        \"cdb87f7b15495e514eb481230b44540c6b0cfeb347c991f06b1e361fcdef0c0b\": [\n",
+        "            Counter({\"Deep Learning for Text Data\", \"Bayesian Methods in Machine Learning\"}),\n",
+        "            Counter({\"Deep Learning for Text Data\"}),\n",
+        "        ],\n",
+        "        \"6fa015d8846e21f4f79bac013b469a1e6e962fffd6121b4d9bcde3906275293e\": [\n",
+        "            Counter({\"Statistical Learning Theory\"}),\n",
+        "            Counter({\"Statistical Learning Theory\", \"Bayesian Methods in Machine Learning\"}),\n",
+        "        ],\n",
+        "    }\n",
+        "\n",
+        "    answer_df = pd.read_csv(ANSWER_SOURCE)\n",
+        "    assignments = assignments.copy()\n",
+        "    assignments['course_set'] = assignments.apply(course_columns_to_set_column, axis=1)\n",
+        "    answer_df['course_set']   = answer_df.apply(course_columns_to_set_column, axis=1)\n",
+        "    mask_common = ~answer_df['ID'].isin(ALTERNATIVES.keys())\n",
+        "    answer_df_common = (\n",
+        "        answer_df[mask_common][['ID', 'course_set', 'fall_course_num']]\n",
+        "        .set_index('ID')\n",
+        "        .sort_index()\n",
+        "    )\n",
+        "    assignments_common = (\n",
+        "        assignments[mask_common][['ID', 'course_set', 'fall_course_num']]\n",
+        "        .set_index('ID')\n",
+        "        .sort_index()\n",
+        "    )\n",
+        "    assert_frame_equal(\n",
+        "        answer_df_common,\n",
+        "        assignments_common,\n",
+        "        check_dtype=False,\n",
+        "        check_names=False,\n",
+        "        check_index_type=False\n",
+        "    )\n",
+        "\n",
+        "    # ------------------------------------------------------------------\n",
+        "    # Check students with multiple allowed answers\n",
+        "    # ------------------------------------------------------------------\n",
+        "    for student_id, allowed_sets in ALTERNATIVES.items():\n",
+        "        student_mask = assignments['ID'] == student_id\n",
+        "        \n",
+        "        student_set = assignments.loc[student_mask, 'course_set'].iloc[0]\n",
+        "        assert student_set in allowed_sets, (\n",
+        "            f\"Student {student_id} got {student_set} — \"\n",
+        "            f\"expected one of: {allowed_sets}\"\n",
+        "        )\n",
+        "\n",
+        "        # fall_course_num must match exactly\n",
+        "        assert (\n",
+        "            answer_df.loc[answer_df['ID'] == student_id, 'fall_course_num'].iloc[0]\n",
+        "            == assignments.loc[student_mask, 'fall_course_num'].iloc[0]\n",
+        "        )\n",
+        "\n",
+        "    print(\"✅ First-wave assignment check PASSED successfully!\")"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "9YXhAvm2loBz"
+      },
+      "source": [
+        "#### 3. [2 points] Conduct all three waves of student selection for elective courses\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "jghxqQIYk9Uf"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "KLwYAVAEmlkd"
+      },
+      "source": [
+        "### 4. [1 point] Distribute students in the same way also to spring elective courses.\n",
+        "\n",
+        "If your code was well structured, this will not be a problem.\n"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "f4cjU49gm0Zj"
+      },
+      "source": [
+        "If you have completed this task, submit, among other things, the file res_spring.csv in the same format as res_fall.csv. Insert a picture describing your experience of completing this assignment:"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "1K6aDQo6mxlc"
+      },
+      "outputs": [],
+      "source": [
+        "# your code"
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "provenance": []
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
